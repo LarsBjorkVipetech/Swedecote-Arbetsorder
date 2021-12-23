@@ -1,17 +1,21 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Main" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:sd="clr-namespace:System.Drawing;assembly=System.Drawing" xmlns:sdd="clr-namespace:System.Drawing.Drawing2D;assembly=System.Drawing" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" this:Main.Height="1000" this:Main.width="5000" this:Main.crop_x="0" this:Main.crop_Y="0" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Drawing;assembly=System.Drawing" xmlns:sdd="clr-namespace:System.Drawing.Drawing2D;assembly=System.Drawing" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Str_img_Path" Type="InArgument(x:String)" />
     <x:Property Name="Int_img_width" Type="InArgument(x:Int32)" />
     <x:Property Name="Int_Img_height" Type="InArgument(x:Int32)" />
-    <x:Property Name="out_Image" Type="InArgument(sd:Image)" />
+    <x:Property Name="in_Image" Type="InArgument(x:String)" />
+    <x:Property Name="Height" Type="InArgument(x:Int32)" />
+    <x:Property Name="width" Type="InArgument(x:Int32)" />
+    <x:Property Name="crop_x" Type="InArgument(x:Int32)" />
+    <x:Property Name="crop_Y" Type="InArgument(x:Int32)" />
+    <x:Property Name="out_Image" Type="OutArgument(sd:Bitmap)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1046,1388</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1058.8,2066</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Main_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <sco:Collection x:TypeArguments="x:String">
+    <scg:List x:TypeArguments="x:String" Capacity="28">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -39,10 +43,11 @@
       <x:String>System.Runtime.InteropServices</x:String>
       <x:String>System.Reflection</x:String>
       <x:String>System.Runtime.Serialization</x:String>
-    </sco:Collection>
+      <x:String>System.Activities.DynamicUpdate</x:String>
+    </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <sco:Collection x:TypeArguments="AssemblyReference">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="28">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -69,9 +74,11 @@
       <AssemblyReference>System.Memory</AssemblyReference>
       <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
       <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
-    </sco:Collection>
+      <AssemblyReference>Microsoft.Bcl.AsyncInterfaces</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap:VirtualizedContainerService.HintSize="304.4,1322.8" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap:VirtualizedContainerService.HintSize="376,2000.8" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:Bitmap" Name="img_outputImage" />
       <Variable x:TypeArguments="sd:Graphics" Name="Gra_NewImage" />
@@ -81,21 +88,26 @@
       <Variable x:TypeArguments="x:Double" Name="Double_Ratio" />
       <Variable x:TypeArguments="x:Int32" Name="Int_new_width" />
       <Variable x:TypeArguments="x:Int32" Name="Int_newheight" />
+      <Variable x:TypeArguments="x:String" Name="variable1" />
+      <Variable x:TypeArguments="sd:Bitmap" Name="Bitmap_Image" />
+      <Variable x:TypeArguments="sd:Bitmap" Name="Img_CropImage" />
+      <Variable x:TypeArguments="x:String" Name="PixelFormat" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_11">
+    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="334,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[in_Image]" />
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_11">
       <Assign.To>
         <OutArgument x:TypeArguments="sd:Image">[Img_Original]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="sd:Image">[system.Drawing.Image.FromFile(Str_img_Path)]</InArgument>
+        <InArgument x:TypeArguments="sd:Image">[system.Drawing.Image.FromFile(in_Image)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_12">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_12">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Double">[x]</OutArgument>
       </Assign.To>
@@ -103,7 +115,7 @@
         <InArgument x:TypeArguments="x:Double">[Int_img_width/Img_Original.Width]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_13">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_13">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Double">[y]</OutArgument>
       </Assign.To>
@@ -111,7 +123,7 @@
         <InArgument x:TypeArguments="x:Double">[Int_Img_height/Img_Original.Height]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_14">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_14">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Double">[Double_Ratio]</OutArgument>
       </Assign.To>
@@ -119,7 +131,7 @@
         <InArgument x:TypeArguments="x:Double">[Math.Min(x,y)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_15">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_15">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Int32">[Int_new_width]</OutArgument>
       </Assign.To>
@@ -127,7 +139,7 @@
         <InArgument x:TypeArguments="x:Int32">[cint(Img_Original.Width*Double_Ratio)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_16">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_16">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Int32">[Int_newheight]</OutArgument>
       </Assign.To>
@@ -135,23 +147,23 @@
         <InArgument x:TypeArguments="x:Int32">[cint(Img_Original.Height*Double_Ratio)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_2">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_2">
       <Assign.To>
-        <OutArgument x:TypeArguments="sd:Image">[out_Image]</OutArgument>
+        <OutArgument x:TypeArguments="sd:Bitmap">[img_outputImage]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="sd:Image">[new Bitmap(Int_new_width,Int_newheight)]</InArgument>
+        <InArgument x:TypeArguments="sd:Bitmap">[new Bitmap(Int_new_width,Int_newheight)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_3">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_3">
       <Assign.To>
         <OutArgument x:TypeArguments="sd:Graphics">[Gra_NewImage]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="sd:Graphics">[Graphics.FromImage(out_Image)]</InArgument>
+        <InArgument x:TypeArguments="sd:Graphics">[Graphics.FromImage(img_outputImage)]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_5">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_5">
       <Assign.To>
         <OutArgument x:TypeArguments="sdd:CompositingQuality">[Gra_NewImage.CompositingQuality]</OutArgument>
       </Assign.To>
@@ -159,7 +171,7 @@
         <InArgument x:TypeArguments="sdd:CompositingQuality">[CompositingQuality.HighQuality]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_6">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_6">
       <Assign.To>
         <OutArgument x:TypeArguments="sdd:InterpolationMode">[Gra_NewImage.InterpolationMode]</OutArgument>
       </Assign.To>
@@ -167,7 +179,7 @@
         <InArgument x:TypeArguments="sdd:InterpolationMode">[InterpolationMode.HighQualityBicubic]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap:VirtualizedContainerService.HintSize="262.4,59.6" sap2010:WorkflowViewState.IdRef="Assign_7">
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_7">
       <Assign.To>
         <OutArgument x:TypeArguments="sdd:SmoothingMode">[Gra_NewImage.SmoothingMode]</OutArgument>
       </Assign.To>
@@ -175,7 +187,7 @@
         <InArgument x:TypeArguments="sdd:SmoothingMode">[SmoothingMode.HighQuality]</InArgument>
       </Assign.Value>
     </Assign>
-    <InvokeMethod DisplayName="Invoke method" sap:VirtualizedContainerService.HintSize="262.4,135.2" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" MethodName="DrawImage">
+    <InvokeMethod DisplayName="Invoke method" sap:VirtualizedContainerService.HintSize="334,135.2" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" MethodName="DrawImage">
       <InvokeMethod.TargetObject>
         <InArgument x:TypeArguments="sd:Graphics">[Gra_NewImage]</InArgument>
       </InvokeMethod.TargetObject>
@@ -185,5 +197,31 @@
       <InArgument x:TypeArguments="x:Int32">[Int_new_width]</InArgument>
       <InArgument x:TypeArguments="x:Int32">[Int_newheight]</InArgument>
     </InvokeMethod>
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_20">
+      <Assign.To>
+        <OutArgument x:TypeArguments="sd:Bitmap">[Bitmap_Image]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="sd:Bitmap">[New bitmap(in_Image)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_19">
+      <Assign.To>
+        <OutArgument x:TypeArguments="sd:Bitmap">[Img_CropImage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="sd:Bitmap">[Bitmap_Image.Clone(new Rectangle(crop_x,crop_Y,Bitmap_Image.Width,Height),img_outputImage.PixelFormat)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="334,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="[in_Image]" />
+    <Assign sap:VirtualizedContainerService.HintSize="334,59.6" sap2010:WorkflowViewState.IdRef="Assign_21">
+      <Assign.To>
+        <OutArgument x:TypeArguments="sd:Bitmap">[out_Image]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="sd:Bitmap">[Img_CropImage]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:SaveImage DisplayName="Save image" FileName="Data\temp.png" sap:VirtualizedContainerService.HintSize="334,134.4" sap2010:WorkflowViewState.IdRef="SaveImage_1" Image="[Img_CropImage]" />
   </Sequence>
 </Activity>
